@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理者ページ</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      padding: 30px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      color: #4CAF50;
+    }
+    .form-container {
+      background-color: #f2f2f2;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    .form-container input, .form-container textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .form-container button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .form-container button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>管理者ページ</h1>
+
+  <div class="form-container">
+    <h2>新しい問題を追加</h2>
+    <form id="questionForm">
+      <label for="questionText">問題文</label>
+      <textarea id="questionText" rows="4" placeholder="問題を入力してください"></textarea>
+
+      <label for="correctAnswer">正解</label>
+      <input type="text" id="correctAnswer" placeholder="正解を入力してください">
+
+      <button type="submit">問題を追加</button>
+    </form>
+  </div>
+
+  <div class="form-container">
+    <h2>追加された問題</h2>
+    <ul id="questionList"></ul>
+  </div>
+
+  <script>
+    // ローカルストレージから問題を取得
+    function loadQuestions() {
+      const questions = JSON.parse(localStorage.getItem('questions')) || [];
+      const questionList = document.getElementById('questionList');
+      questionList.innerHTML = '';  // 初期化
+
+      questions.forEach((question, index) => {
+        const li = document.createElement('li');
+        li.textContent = `問題 ${index + 1}: ${question.text}（答え: ${question.answer}）`;
+        questionList.appendChild(li);
+      });
+    }
+
+    // 新しい問題を追加
+    document.getElementById('questionForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const questionText = document.getElementById('questionText').value.trim();
+      const correctAnswer = document.getElementById('correctAnswer').value.trim();
+
+      if (questionText && correctAnswer) {
+        const questions = JSON.parse(localStorage.getItem('questions')) || [];
+        questions.push({ text: questionText, answer: correctAnswer });
+        localStorage.setItem('questions', JSON.stringify(questions));
+
+        // フォームをリセット
+        document.getElementById('questionText').value = '';
+        document.getElementById('correctAnswer').value = '';
+
+        // 問題を再読み込み
+        loadQuestions();
+      }
+    });
+
+    // ページが読み込まれた時に問題をロード
+    window.onload = loadQuestions;
+  </script>
+</body>
+</html>
