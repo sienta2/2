@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>問題登録ページ</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #222;
+      color: #fff;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00FFAA;
+      border-bottom: 2px solid #00FFAA;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      background-color: #111;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #00FFAA;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #00cc88;
+    }
+
+    #questionsList {
+      margin-top: 30px;
+      border-top: 1px dashed #555;
+      padding-top: 20px;
+    }
+
+    .question-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #555;
+      background-color: #333;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🛠 管理者モード：問題登録</h1>
+
+  <label>問題文:</label>
+  <input type="text" id="question" placeholder="例: 日本の首都は？">
+
+  <label>正解:</label>
+  <input type="text" id="answer" placeholder="例: 東京">
+
+  <button onclick="addQuestion()">＋ 登録</button>
+
+  <div id="questionsList"></div>
+
+  <script>
+    const questionInput = document.getElementById('question');
+    const answerInput = document.getElementById('answer');
+    const list = document.getElementById('questionsList');
+
+    function loadQuestions() {
+      const data = JSON.parse(localStorage.getItem('questions')) || [];
+      list.innerHTML = '<h3>📚 登録済みの問題:</h3>';
+
+      data.forEach((q, i) => {
+        const div = document.createElement('div');
+        div.className = "question-item";
+        div.innerText = `問 ${i + 1}: ${q.text}（答え: ${q.answer}）`;
+        list.appendChild(div);
+      });
+    }
+
+    function addQuestion() {
+      const text = questionInput.value.trim();
+      const answer = answerInput.value.trim();
+
+      if (!text || !answer) {
+        alert("⚠ 質問と答えを両方入力してください。");
+        return;
+      }
+
+      const questions = JSON.parse(localStorage.getItem('questions')) || [];
+      questions.push({ text, answer });
+      localStorage.setItem('questions', JSON.stringify(questions));
+
+      questionInput.value = '';
+      answerInput.value = '';
+      loadQuestions();
+    }
+
+    // 初期表示
+    loadQuestions();
+  </script>
+
+</body>
+</html>
+
+
+
+2025 S.K, Inc
